@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, func, select
 
 from db.models import Link
 
@@ -22,7 +22,24 @@ def get_link(short: str, session: Session) -> Link | None:
     return None
 
 
-def increment_click(link: Link, session: Session):
+def get_ids(session: Session):
+    return session.exec(select(Link.id)).all()
+
+
+def get_max_id(session: Session):
+    return session.exec(select(func.max(Link.id))).one()
+
+
+def delete_link(short: str, session: Session):
+    link = session.exec(select(Link).where(Link.short_url == short)).first()
+    if link:
+        session.delete(link)
+        session.commit()
+        return link
+    return None
+
+
+def add_click(link: Link, session: Session):
     link.clicks += 1
     session.add(link)
     session.commit()
