@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from db.models import Link
 
 
-def create_new_short(link: Link, session: Session) -> Link:
+def create_new(link: Link, session: Session) -> Link:
     session.add(link)
     session.commit()
     session.refresh(link)
@@ -11,7 +11,7 @@ def create_new_short(link: Link, session: Session) -> Link:
 
 
 def get_links(session: Session):
-    links = session.exec(select(Link))
+    links = session.exec(select(Link)).all()
     return links
 
 

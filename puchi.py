@@ -1,23 +1,29 @@
-from random import choices
-from string import ascii_letters, digits
+import random
 
-from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from fastapi import APIRouter
 
-from db.crud import create_new_short
-from db.database import get_session
+from db.crud import create_new
+from db.database import SessionDep, URL_Words
 from db.models import Link
 
-FULL_ASCII = list(ascii_letters + digits)
 
-puchi = APIRouter(prefix="/api")
+# TODO: Хуйня, переделать
+def generate_short_url(id: int) -> str:
+    words = URL_Words()
+    adj = words.adjs[id % 128].capitalize()
+    noun = words.nouns[id // 128 % 128].capitalize()
+    vrb = words.vrbs[id // 128 // 128 % 128].capitalize()
+    advrb = words.advrbs[id // 128 // 128 // 128 % 128].capitalize()
+    return "".join((adj, noun, vrb, advrb))
 
 
-def create_short_url():
-    return "".join(choices(FULL_ASCII, k=6))
+api = APIRouter(prefix="/api", tags=["api"])
 
 
-@puchi.post("/make_short")
-def make_short(long: Link, session: Session = Depends(get_session)) -> Link:
-    link = Link(short_url=create_short_url(), long_url=long.long_url)
-    return create_new_short(link, session)
+@api.post("/new_url")
+def new_url(request: Link, session: SessionDep):
+    id = random.choice(range(0, 1000))
+    short = generate_short_url(id)
+    return create_new(
+        Link(short_url=short, short_id=id, long_url=request.long_url), session
+    )
