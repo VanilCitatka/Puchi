@@ -38,6 +38,9 @@ class URL_Words(object):
     def get_words(self):
         return self.adjs, self.nouns, self.vrbs, self.advrbs
 
+    def dicts_lens(self):
+        return tuple(map(len, (self.adjs, self.advrbs, self.vrbs, self.nouns)))
+
 
 def _init_db():
     SQLModel.metadata.create_all(engine)

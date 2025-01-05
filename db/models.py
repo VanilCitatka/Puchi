@@ -1,13 +1,5 @@
-from enum import Enum
-
 from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
-
-
-class TypeEnum(str, Enum):
-    humanlike = "humanlike"
-    short = "short"
-    other = "other"
 
 
 class Link(SQLModel, table=True):
@@ -20,7 +12,6 @@ class Link(SQLModel, table=True):
 
 class LongLink(BaseModel):
     url: str
-    encoding_type: TypeEnum
 
 
 class ShortLink(BaseModel):
