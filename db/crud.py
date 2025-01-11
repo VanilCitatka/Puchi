@@ -27,7 +27,9 @@ def get_ids(session: Session):
 
 
 def get_max_id(session: Session):
-    return session.exec(select(func.max(Link.id))).one()
+    if (max_id := session.exec(select(func.max(Link.id))).one()) is None: 
+        return 0
+    return  max_id
 
 
 def delete_link(short: str, session: Session):
