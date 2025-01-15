@@ -8,12 +8,12 @@ class Link(SQLModel, table=True):
     short_url: str | None 
     long_url: str
     clicks: int = Field(default=0)
-    immutable: bool = Field(default=False)
 
+class ErrorResponse(BaseModel):
+    detail: str
 
-class LongLink(BaseModel):
+class NewLink(BaseModel):
     url: str
-
 
 class ShortLink(BaseModel):
     short_url: str

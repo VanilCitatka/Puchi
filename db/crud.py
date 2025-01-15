@@ -33,9 +33,9 @@ def get_max_id(session: Session):
 
 
 def delete_link(short: str, session: Session):
-    link = session.exec(select(Link).where(Link.short_url == short)).first()
-    if link:
+    if link := session.exec(select(Link).where(Link.short_url == short)).first():
         session.delete(link)
+        print('DELETED!')
         session.commit()
         return link
     return None
