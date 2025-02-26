@@ -1,17 +1,15 @@
 import json
 from contextlib import asynccontextmanager
 from typing import Annotated
+from os import getenv
 
 from fastapi import Depends, FastAPI
 from sqlalchemy import create_engine
 from sqlmodel import Session, SQLModel
 
+    
 SQLITE_DB_NAME = "puchi_db.sqlite"
 SQLITE_URL = f"sqlite:///./{SQLITE_DB_NAME}"
-
-connect_args = {"check_same_thread": False}
-engine = create_engine(SQLITE_URL, echo=True, connect_args=connect_args)
-
 
 class Wordbook(object):
     def __new__(cls):
@@ -34,8 +32,11 @@ class Wordbook(object):
 
 
 def _init_db():
+    global engine
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(SQLITE_URL, echo=True, connect_args=connect_args)
     SQLModel.metadata.create_all(engine)
-
+    return engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

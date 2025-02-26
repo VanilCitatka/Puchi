@@ -11,9 +11,3 @@ class Link(SQLModel, table=True):
 
 class ErrorResponse(BaseModel):
     detail: str
-
-class NewLink(BaseModel):
-    url: str
-
-class ShortLink(BaseModel):
-    short_url: str

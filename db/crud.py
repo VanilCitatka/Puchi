@@ -3,21 +3,29 @@ from sqlmodel import Session, func, select
 from db.models import Link
 
 
-def create_new(link: Link, session: Session) -> Link:
+def create_link(link: Link, session: Session) -> Link:
     session.add(link)
     session.commit()
     session.refresh(link)
     return link
 
 
-def get_links(session: Session):
+def get_all(session: Session):
     links = session.exec(select(Link)).all()
     return links
 
 
-def get_link(short: str, session: Session) -> Link | None:
-    link = session.exec(select(Link).where(Link.short_url == short)).first()
-    if link:
+def delete_link(short: str, session: Session):
+    if link := session.exec(select(Link).where(Link.short_url == short)).first():
+        session.delete(link)
+        print('DELETED!')
+        session.commit()
+        return link
+    return None
+
+
+def get_details(short: str, session: Session) -> Link | None:
+    if link := session.exec(select(Link).where(Link.short_url == short)).first():
         return link
     return None
 
@@ -31,14 +39,6 @@ def get_max_id(session: Session):
         return 0
     return  max_id
 
-
-def delete_link(short: str, session: Session):
-    if link := session.exec(select(Link).where(Link.short_url == short)).first():
-        session.delete(link)
-        print('DELETED!')
-        session.commit()
-        return link
-    return None
 
 
 def add_click(link: Link, session: Session):

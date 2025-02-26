@@ -1,4 +1,5 @@
 .venv
+frontend/
 __pycache__/
 *.sqlite
 .vscode
